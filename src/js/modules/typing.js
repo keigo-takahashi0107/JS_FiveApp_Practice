@@ -30,14 +30,15 @@ window.addEventListener('keypress', e => {
     return;
 })
 
-function start() {
+async function start() {
     startPage.classList.remove('show');
     typingGame.classList.add('show');
     titleTime.textContent = timelimit;
     remainingTime = timelimit;
     timer.textContent = remainingTime;
-    textarea.focus();
+    await fetchAndRenderQuotes();
     textarea.disabled = false;
+    textarea.focus();
 
     intervalId = setInterval(() => {
         remainingTime -= 1;
@@ -64,6 +65,8 @@ backToStart.addEventListener('click', () => {
 })
 
 async function fetchAndRenderQuotes() {
+    quote.innerHTML = '';
+    textarea.value = '';
     const RANDOM_QUOTE_API_URL = 'https://api.quotable.io/random';
     const response = await fetch(RANDOM_QUOTE_API_URL);
     const data = await response.json();
@@ -78,5 +81,26 @@ async function fetchAndRenderQuotes() {
     })
     author.textContent = quotes.author;
 }
+
+textarea.addEventListener('input', () => {
+    let inputArray = textarea.value.split('');
+    let spans = quote.querySelectorAll('span');
+    spans.forEach(span => {
+        span.className = ''; 
+    })
+    inputArray.forEach((letter, index) => {
+        if(letter === spans[index].textContent) {
+            spans[index].classList.add('correct');
+        } else {
+            spans[index].classList.add('wrong');
+            if(spans[index].textContent === ' ') {
+                spans[index].classList.add('bar');
+            }
+        }
+    })
+    if(spans.length === inputArray.length && [...spans].every(span => span.classList.contains('correct'))) {
+        showResult();
+    }
+})
 
 fetchAndRenderQuotes();
