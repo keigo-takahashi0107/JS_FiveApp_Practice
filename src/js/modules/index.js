@@ -1,4 +1,5 @@
 import * as Todo from './todo.js';
+import * as Typing from './typing.js';
 
 const nav = document.querySelector('#nav');
 const cover = document.querySelector('#cover');
