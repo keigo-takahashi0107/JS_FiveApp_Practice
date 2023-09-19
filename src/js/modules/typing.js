@@ -9,6 +9,8 @@ const resultContainer = document.querySelector('#ty-result-container')
 const textarea = document.querySelector('#ty-textarea');
 const quote = document.querySelector('#ty-quote');
 const author = document.querySelector('#ty-author-name');
+const LPM = document.querySelector('#ty-LPM');
+const quoteReview = document.querySelector('#ty-quote-review');
 
 let timelimit = 30;
 let remainingTime;
@@ -16,6 +18,8 @@ let isActive = false;
 let isPlaying = false;
 let intervalId = null;
 let quotes;
+let typedCount;
+let LPMCount;
 
 timeSelectEl.addEventListener('change', () => {
     timelimit = timeSelectEl.value;
@@ -39,6 +43,7 @@ async function start() {
     await fetchAndRenderQuotes();
     textarea.disabled = false;
     textarea.focus();
+    typedCount = 0;
 
     intervalId = setInterval(() => {
         remainingTime -= 1;
@@ -52,6 +57,9 @@ async function start() {
 function showResult() {
     textarea.disabled = true;
     clearInterval(intervalId);
+    LPMCount = remainingTime === 0 ? Math.floor(typedCount * 60 / timelimit) : Math.floor(typedCount * 60 / (timelimit - remainingTime));
+    LPM.textContent = LPMCount;
+    quoteReview.innerHTML = `${quotes.quote} <br>--- ${quotes.author}`;
     setTimeout(() => {
         resultContainer.classList.add('show');
     }, 1000)
@@ -88,9 +96,13 @@ textarea.addEventListener('input', () => {
     spans.forEach(span => {
         span.className = ''; 
     })
+    typedCount = 0;
     inputArray.forEach((letter, index) => {
         if(letter === spans[index].textContent) {
             spans[index].classList.add('correct');
+            if(spans[index].textContent !== ' ') {
+                typedCount += 1;
+            }
         } else {
             spans[index].classList.add('wrong');
             if(spans[index].textContent === ' ') {
