@@ -58,10 +58,17 @@ function showResult() {
     textarea.disabled = true;
     clearInterval(intervalId);
     LPMCount = remainingTime === 0 ? Math.floor(typedCount * 60 / timelimit) : Math.floor(typedCount * 60 / (timelimit - remainingTime));
-    LPM.textContent = LPMCount;
     quoteReview.innerHTML = `${quotes.quote} <br>--- ${quotes.author}`;
+    let count = 0;
     setTimeout(() => {
         resultContainer.classList.add('show');
+        const countup = setInterval(() => {
+            LPM.textContent = count;
+            count += 1;
+            if(count >= LPMCount) {
+                clearInterval(countup);
+            }
+        }, 20)
     }, 1000)
 }
 
