@@ -26,3 +26,4 @@ appNames.forEach(appName => {
     })
     nav.appendChild(menu);
 })
+
