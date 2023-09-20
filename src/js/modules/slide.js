@@ -9,6 +9,7 @@ let level;
 let size;
 let orderedArray = [];
 let hiddenTileIndex;
+let tilesArray = [];
 const images = ['space', 'veges'];
 let selectedImage;
 const levelMap = {
@@ -76,5 +77,17 @@ function renderTiles(arr) {
 
 function start() {
     setOriginalImage();
-    renderTiles(orderedArray);
+    tilesArray = generateShuffledArray(orderedArray);
+    renderTiles(tilesArray);
+}
+
+function generateShuffledArray(arr) {
+    let shuffledArray = arr.slice();
+    for (let i = shuffledArray.length - 1; i > -1; i--) {
+        let randomIndex = Math.floor(Math.random() * shuffledArray.length);
+        let tempValue = shuffledArray[i];
+        shuffledArray[i] = shuffledArray[randomIndex];
+        shuffledArray[randomIndex] = tempValue;
+    }
+    return shuffledArray;
 }
