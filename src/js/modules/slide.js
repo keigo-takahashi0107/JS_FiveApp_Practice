@@ -8,6 +8,7 @@ const screen = document.querySelector('.sp-screen');
 let level;
 let size;
 let orderedArray = [];
+let hiddenTileIndex;
 const images = ['space', 'veges'];
 let selectedImage;
 const levelMap = {
@@ -28,6 +29,7 @@ menu.forEach(item => {
                 orderedArray.push(tileXY);
             }
         }
+        hiddenTileIndex = Math.floor(Math.random() * size ** 2);
         screen.style.gridTemplateColumns = levelMap[level].grid;
         start();
     })
@@ -40,7 +42,15 @@ backToMenu.addEventListener('click', () => {
 function setOriginalImage() {
     selectedImage = images[Math.floor(Math.random() * images.length)];
     originalImage.setAttribute('src', `./images/slide_puzzle/${selectedImage}/${selectedImage}.png`);
+}
 
+originalImage.onload = () => {
+    const naturalWidth = originalImage.naturalWidth;
+    const naturalHeight = originalImage.naturalHeight;
+    const ratio = Math.floor(naturalHeight / naturalWidth * 1000) / 1000;
+    screen.style.width = " 480px";
+    screen.style.height = `${Math.floor(480 * ratio)}px`;
+    console.log(naturalWidth);
 }
 
 showOriginalBtn.addEventListener('mouseover', () => {
@@ -53,9 +63,12 @@ showOriginalBtn.addEventListener('mouseleave', () => {
 
 function renderTiles(arr) {
     screen.innerHTML = '';
-    arr.forEach(tile => {
+    arr.forEach((tile, index) => {
         const div = document.createElement('div');
         div.classList.add('sp-tile');
+        if(index === hiddenTileIndex){
+            div.classList.add('hidden');
+        }
         div.style.backgroundImage = `url(./images/slide_puzzle/${selectedImage}/${level}/tile${tile}.png)`;
         screen.appendChild(div);
     })
