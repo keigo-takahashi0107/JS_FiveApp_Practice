@@ -96,6 +96,8 @@ function generateShuffledArray(arr) {
 
 function updateScreen() {
     tiles = document.querySelectorAll('.sp-tile');
+    const hiddenTileRow = Math.floor(hiddenTileIndex / size);
+    const hiddenTileCol = hiddenTileIndex % size;
 
     function generateNewArray(arr, index, hiddenTileIndex) {
         const tempValue = arr[index];
@@ -112,7 +114,17 @@ function updateScreen() {
 
     tiles.forEach((tile, index) => {
         tile.addEventListener('click', () => {
-            updateTiles(index);
+            const row = Math.floor(index / size);
+            const col = index % size;
+            if(level === 'easy') {
+                updateTiles(index);
+            } else {
+                if(row === hiddenTileRow && Math.abs(col - hiddenTileCol) === 1 
+                || col === hiddenTileCol && Math.abs(row - hiddenTileRow) === 1) {
+                    updateTiles(index);
+                }
+            }
+            updateScreen();
         })
     })
 }
