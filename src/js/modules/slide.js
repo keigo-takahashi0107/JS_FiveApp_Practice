@@ -4,6 +4,7 @@ const backToMenu = document.querySelector('.sp-back-to-menu');
 const originalImage = document.querySelector('#sp-original-image');
 const showOriginalBtn = document.querySelector('#sp-show-original-btn');
 const screen = document.querySelector('.sp-screen');
+const counter = document.querySelector('.sp-counter');
 
 let level;
 let size;
@@ -11,6 +12,7 @@ let orderedArray = [];
 let hiddenTileIndex;
 let tilesArray = [];
 let tiles;
+let count;
 const images = ['space', 'veges'];
 let selectedImage;
 const levelMap = {
@@ -39,6 +41,7 @@ menu.forEach(item => {
 
 backToMenu.addEventListener('click', () => {
     menuCover.classList.remove('hide');
+    screen.classList.remove('zoom');
 })
 
 function setOriginalImage() {
@@ -78,6 +81,8 @@ function renderTiles(arr) {
 
 function start() {
     setOriginalImage();
+    count = 0;
+    counter.textContent = count;
     tilesArray = generateShuffledArray(orderedArray);
     renderTiles(tilesArray);
     updateScreen();
@@ -110,6 +115,13 @@ function updateScreen() {
         tilesArray = generateNewArray(tilesArray, index, hiddenTileIndex);
         hiddenTileIndex = index;
         renderTiles(tilesArray);
+        count++;
+        counter.textContent = count;
+        setTimeout(() => {
+            if(JSON.stringify(tilesArray) === JSON.stringify(orderedArray)) {
+                complete();
+            }
+        }, 500)
     }
 
     tiles.forEach((tile, index) => {
@@ -126,5 +138,13 @@ function updateScreen() {
             }
             updateScreen();
         })
+    })
+}
+
+function complete() {
+    tiles[hiddenTileIndex].classList.remove('hidden');
+    screen.classList.add('zoom');
+    tiles.forEach(tile => {
+        tile.classList.add('complete');
     })
 }
